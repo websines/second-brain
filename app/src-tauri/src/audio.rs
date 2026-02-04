@@ -374,7 +374,6 @@ fn capture_system_audio_windows(
     is_capturing: Arc<AtomicBool>,
 ) -> Result<(), String> {
     use windows::{
-        core::*,
         Win32::Media::Audio::*,
         Win32::System::Com::*,
     };
@@ -382,7 +381,7 @@ fn capture_system_audio_windows(
     unsafe {
         // Initialize COM
         CoInitializeEx(None, COINIT_MULTITHREADED)
-            .map_err(|e| format!("COM init failed: {}", e))?;
+            .ok().map_err(|e| format!("COM init failed: {}", e))?;
 
         // Get default audio endpoint for loopback
         let enumerator: IMMDeviceEnumerator = CoCreateInstance(
@@ -431,8 +430,7 @@ fn capture_system_audio_windows(
         while is_capturing.load(Ordering::SeqCst) {
             std::thread::sleep(std::time::Duration::from_millis(10));
 
-            let mut packet_length = 0u32;
-            capture_client.GetNextPacketSize(&mut packet_length)
+            let mut packet_length = capture_client.GetNextPacketSize()
                 .map_err(|e| format!("GetNextPacketSize failed: {}", e))?;
 
             while packet_length > 0 {
@@ -486,7 +484,7 @@ fn capture_system_audio_windows(
                 capture_client.ReleaseBuffer(num_frames)
                     .map_err(|e| format!("ReleaseBuffer failed: {}", e))?;
 
-                capture_client.GetNextPacketSize(&mut packet_length)
+                packet_length = capture_client.GetNextPacketSize()
                     .map_err(|e| format!("GetNextPacketSize failed: {}", e))?;
             }
         }

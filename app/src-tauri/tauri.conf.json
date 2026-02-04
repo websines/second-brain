@@ -41,9 +41,6 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": {
-      "libs/*": "./"
-    },
     "macOS": {
       "entitlements": null,
       "exceptionDomain": null,

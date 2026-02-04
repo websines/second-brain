@@ -1,0 +1,82 @@
+[package]
+name = "second-brain"
+version = "0.1.0"
+description = "Real-time meeting assistant with contextual intelligence"
+authors = ["Subhankar Chowdhury"]
+edition = "2021"
+
+[lib]
+name = "second_brain_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon"] }
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-global-shortcut = "2"
+
+# Screenshot capture
+screenshots = "0.8"
+base64 = "0.22"
+image = "0.25"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+
+# High-performance synchronization primitives
+parking_lot = "0.12"
+
+# Model downloading
+reqwest = { version = "0.12", features = ["stream"] }
+futures-util = "0.3"
+flate2 = "1.0"
+tar = "0.4"
+dirs = "5.0"
+
+# Cross-platform audio for microphone and loopback
+cpal = "0.15"
+
+# Speech recognition - sherpa-onnx Rust bindings
+sherpa-rs = { version = "0.6", features = ["download-binaries"] }
+
+# Named Entity Recognition - GLiNER inference
+gline-rs = "1"
+orp = "0.9"
+
+# Embeddings - ONNX Runtime + tokenizers
+ort = { version = "2.0.0-rc.9", features = ["download-binaries"] }
+tokenizers = { version = "0.21", default-features = false, features = ["onig"] }
+ndarray = "0.16"
+
+# Database - SurrealDB embedded (graph + vector + FTS)
+surrealdb = { version = "2.1", features = ["kv-rocksdb"] }
+
+# LLM Agent framework
+rig-core = "0.8"
+schemars = "0.8"
+
+# User data store - SQLite
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+# Web crawler agent
+spider = "2.38"
+duckduckgo_search = "0.1"
+text-splitter = { version = "0.28", features = ["markdown"] }
+
+# PDF text extraction
+pdf-extract = "0.7"
+regex = "1.12.2"
+
+# Audio capture (Windows) - WASAPI loopback for system audio
+[target.'cfg(target_os = "windows")'.dependencies]
+windows = { version = "0.58", features = [
+    "Win32_Media_Audio",
+    "Win32_System_Com",
+    "Win32_Foundation",
+    "Win32_Devices_FunctionDiscovery",
+] }
+
